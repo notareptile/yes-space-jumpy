@@ -7,7 +7,7 @@ class Player(Block):
     def applygravity(self, gravity):
         self.yvelocity += gravity
     def jump(self, distance):
-        self.yvelocity -= distance*-1
+        self.yvelocity = distance*-1
         self.yup += self.yvelocity
     def checkdestory(self):
         if self.yup > 700:

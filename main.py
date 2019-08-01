@@ -9,12 +9,43 @@ clock = pygame.time.Clock()
 player = Player((48, 57, 97))
 grounds = []
 
-pygame.time.set_timer(pygame.USEREVENT+1, 3000)
+pygame.time.set_timer(pygame.USEREVENT+1, 1500)
+
+def addground(xleft, yup, yvelocity, width):
+    global grounds
+    grounds.append(Ground(xleft, yup, yvelocity, width, (0, 0, 0)))
+
+def touchingground():
+    global grounds
+    for awesome in grounds:
+        if player.yup + player.size < awesome.yup + 21 and player.xleft + player.size > awesome.xleft and player.xleft < awesome.xleft + awesome.width and player.yup > awesome.yup - 20:
+            return True
+    return False
 
 while True:
     clock.tick(60)
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             sys.exit("Thanks for playing!")
+        if event.type == pygame.USEREVENT+1:
+            addground(random.randint(0, 700), -30, 2, random.randint(50, 300))
+            addground(random.randint(0, 700), -30, 2, random.randint(50, 300))
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_LEFT:
+                player.xvelocity -= 10
+            if event.key == pygame.K_RIGHT:
+                player.xvelocity += 10
+        if event.type == pygame.KEYUP:
+            if event.key == pygame.K_LEFT:
+                player.xvelocity = 0
+            if event.key == pygame.K_RIGHT:
+                player.xvelocity = 0
+    for awesome in grounds:
+        pygame.draw.rect(screen, awesome.color, pygame.Rect(awesome.xleft, awesome.yup, awesome.width, awesome.height), 0)
+        awesome.move()
+        if awesome.checkdestroy():
+            grounds.remove(awesome)
+    pygame.draw.rect(screen, player.color, pygame.Rect(player.xleft, player.yup, player.width, player.height), 0)
+    player.move()
     pygame.display.flip()
     screen.fill((48, 21, 61))
