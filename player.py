@@ -10,5 +10,5 @@ class Player(Block):
         self.yvelocity = distance*-1
         self.yup += self.yvelocity
     def checkdestory(self):
-        if self.yup > 700:
+        if self.yup > 800:
             self.shoulddestroy = True

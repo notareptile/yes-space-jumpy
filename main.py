@@ -9,7 +9,7 @@ clock = pygame.time.Clock()
 player = Player((48, 57, 97))
 grounds = []
 
-pygame.time.set_timer(pygame.USEREVENT+1, 1500)
+pygame.time.set_timer(pygame.USEREVENT+1, 1200)
 
 def addground(xleft, yup, yvelocity, width):
     global grounds
@@ -22,6 +22,11 @@ def touchingground():
             return True
     return False
 
+def init():
+    addground(300, 50, 2, 200)
+
+init()
+
 while True:
     clock.tick(60)
     for event in pygame.event.get():
@@ -31,6 +36,8 @@ while True:
             addground(random.randint(0, 700), -30, 2, random.randint(50, 300))
             addground(random.randint(0, 700), -30, 2, random.randint(50, 300))
         if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_UP and touchingground():
+                player.jump(17)
             if event.key == pygame.K_LEFT:
                 player.xvelocity -= 10
             if event.key == pygame.K_RIGHT:
@@ -46,6 +53,13 @@ while True:
         if awesome.checkdestroy():
             grounds.remove(awesome)
     pygame.draw.rect(screen, player.color, pygame.Rect(player.xleft, player.yup, player.width, player.height), 0)
+    if not touchingground():
+        player.applygravity(0.5)
+    else:
+        player.yvelocity = 2
+    player.checkdestory()
+    if player.shoulddestroy:
+        sys.exit("GG")
     player.move()
     pygame.display.flip()
     screen.fill((48, 21, 61))
